@@ -5,8 +5,8 @@
 
 ## WTF ?
 SAPE is a poetry editor program, basicly a minimalistic text-editor with two main functions : 
-1. Phonetic Syllable counter
-2. Rhyme search
+* Phonetic Syllable counter
+* Rhyme search
 
 ## Releases :
 0.0.1 : https://github.com/caioluders/SAPE/releases/tag/0.0.1
