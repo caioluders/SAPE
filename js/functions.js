@@ -68,3 +68,7 @@ function textarea_silabas() {
   document.getElementById('counter').value = new_lines;
   console.log(new_lines) ;
 }
+
+function closeNav() {
+    document.getElementById("rime_sidebar").style.width = "0";
+}

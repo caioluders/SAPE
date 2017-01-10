@@ -79,3 +79,12 @@ li {
     width: 0px;  /* remove scrollbar space */
     background: transparent;  /* optional: just make scrollbar invisible */
 }
+
+.closebtn {
+    position: absolute;
+    top: 0;
+    color: white;
+    text-decoration: none;
+    left: 0.3em;
+    font-size: 36px;
+}
