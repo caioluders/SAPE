@@ -1,3 +1,16 @@
+$(document).ready(function()
+{
+$("#counter").scroll(function () { 
+        $("#main_text").scrollTop($("#counter").scrollTop());
+        $("#main_text").scrollLeft($("#counter").scrollLeft());
+    });
+$("#main_text").scroll(function () { 
+        $("#counter").scrollTop($("#main_text").scrollTop());
+        $("#counter").scrollLeft($("#main_text").scrollLeft());
+    });
+
+});
+
 function countSilabas(line) {
     var almost_done = line.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").split(" ") ;
     var silabas_counter = 0 ;
