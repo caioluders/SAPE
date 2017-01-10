@@ -1,0 +1,17 @@
+{
+  "name": "sap",
+  "description": "Simple poem editor app.",
+  "version": "0.0.1",
+  "author": "Caio Lüders <caioluders@gmail.com>",
+  "main": "main.js",
+  "dependencies": {
+    "electron": "^1.4.3",
+    "electron-packager": "^8.1.0",
+    "electron-editor-context-menu": "^1.1.1",
+    "sql.js": "0.4.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1", 
+    "start" : "electron ."
+  }
+}
