@@ -6,7 +6,9 @@ const { Menu } = require('electron')
 const BrowserWindow = electron.BrowserWindow
 const {dialog} = require('electron')
 const path = require('path')
+const targz = require('targz')
 const url = require('url')
+const fs = require('fs')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -15,6 +17,22 @@ let mainWindow
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1300, height: 800,backgroundColor: '#000',titleBarStyle:'hidden'})
+
+  // Check if the word database exists , decompress it if not
+  // 100mb is tooooo much
+  if ( !fs.existsSync(__dirname+"/js/ptbr_words.db") ) {
+    targz.decompress({
+      src:__dirname+'/js/ptbr_words.tar.gz',
+      dest:__dirname+'/js/'
+    }, function(err){
+      if(err){
+        console.log(err);
+      } else {
+        console.log("Extracted database") ;
+      }
+    }
+    );
+  }
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -41,6 +59,7 @@ function createWindow () {
         submenu: [
             { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
             { type: "separator" },
+            { label: "Settings", accelerator: "", click: function() { openSettings(); }},
             { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
         ]}, {
           label: "File",
@@ -76,7 +95,45 @@ function createWindow () {
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
+
+  // Emitted when the window is closed.
+  mainWindow.on('closed', function () {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    mainWindow = null
+  })
+}
+
+function openSettings () {
+  // Create the browser window.
+  mainWindow = new BrowserWindow({width: 500, height: 500,backgroundColor: '#000',titleBarStyle:'hidden'})
+
+  // and load the index.html of the app.
+  mainWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'settings.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
+
+  mainWindow.loadURL("file://" + __dirname + "/settings.html");
+
+  mainWindow.webContents.executeJavaScript(`
+    var path = require('path');
+    module.paths.push(path.resolve('node_modules'));
+    module.paths.push(path.resolve('../node_modules'));
+    module.paths.push(path.resolve(__dirname, '..', '..', 'electron', 'node_modules'));
+    module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_modules'));
+    module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
+    module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'));
+    path = undefined;
+  `);
+
+
+  // Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+  // Open the DevTools.
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
