@@ -31,8 +31,6 @@ ipcRenderer.on('new-file', function() {
 });
 
 
-
-
 window.addEventListener('contextmenu', function(e) {
   // Only show the context menu in text editors.
   if (!e.target.closest('textarea, input, [contenteditable="true"]')) return;
@@ -88,10 +86,17 @@ function getRimes() {
   document.getElementById("rime_sidebar").style.width = "12em";
   var word = window.getSelection().toString() ;
   document.getElementById('rime_list').innerHTML = "" ;
-  var rimes = db.exec("SELECT * from word where substr(word.word,-4) == '"+word.substr(-4)+"'") ; // sql injection lols
-  for (var i = 0 ; i < rimes[0].values.length ; i++) {
-    var li = document.createElement('li') ;
-    li.appendChild(document.createTextNode(rimes[0].values[i][1])) ;
-    document.getElementById('rime_list').appendChild(li) ;
-  }
+  settings.get('numbers_letters').then(val => {
+    var letters_number = val ;
+    console.log(letters_number) ;
+    var query = "SELECT * from word where substr(word.word,-"+letters_number.toString()+") == '"+word.substr(-letters_number)+"'" ;
+    console.log(query) ;
+    var rimes = db.exec(query) ; // sql injection lols
+    for (var i = 0 ; i < rimes[0].values.length ; i++) {
+      var li = document.createElement('li') ;
+      li.appendChild(document.createTextNode(rimes[0].values[i][1])) ;
+      document.getElementById('rime_list').appendChild(li) ;
+    }
+  });
+ 
 }
