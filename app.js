@@ -1,7 +1,7 @@
 const {dialog} = require('electron').remote ;
 var remote = require('electron').remote;
 var path = require('path');
-
+const settings = require('electron-settings');
 var buildEditorContextMenu = remote.require('electron-editor-context-menu');
 const fs = require('fs');
 var SQL = require('sql.js') ;
@@ -29,6 +29,9 @@ ipcRenderer.on('save-file', function() {
 ipcRenderer.on('new-file', function() {
   newFile() ;
 });
+
+
+
 
 window.addEventListener('contextmenu', function(e) {
   // Only show the context menu in text editors.

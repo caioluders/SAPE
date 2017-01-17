@@ -1,10 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
+	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+	<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" src="js/settings.js"></script>
 	<title>Settings</title>
+	<link rel="stylesheet" href='css/settings.css'> 
 </head>
 <body>
+	<div>
+		Font Size <input id="font_size" type="number" name="font-size" min="0" max="100">
+	</div>
+	<div>
+		Letters to rime <input id="letters" type="number" name="font-size" min="0" max="4">
+	</div>
+	<div>
+		Dark mode<label class="switch">
+		<input type="checkbox">
+		<div class="slider round"></div>
+		</label>
+	</div>
+	<div>
+		 <button type="button" onclick="saveSettings()">Apply</button> 
+	</div>
 
 </body>
 </html>

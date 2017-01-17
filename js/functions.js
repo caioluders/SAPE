@@ -1,13 +1,12 @@
-$(document).ready(function()
-{
-$("#counter").scroll(function () { 
-        $("#main_text").scrollTop($("#counter").scrollTop());
-        $("#main_text").scrollLeft($("#counter").scrollLeft());
-    });
-$("#main_text").scroll(function () { 
-        $("#counter").scrollTop($("#main_text").scrollTop());
-        $("#counter").scrollLeft($("#main_text").scrollLeft());
-    });
+$(document).ready(function() {
+  $("#counter").scroll(function () { 
+          $("#main_text").scrollTop($("#counter").scrollTop());
+          $("#main_text").scrollLeft($("#counter").scrollLeft());
+      });
+  $("#main_text").scroll(function () { 
+          $("#counter").scrollTop($("#main_text").scrollTop());
+          $("#counter").scrollLeft($("#main_text").scrollLeft());
+      });
 
 });
 

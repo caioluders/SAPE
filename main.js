@@ -9,10 +9,17 @@ const path = require('path')
 const targz = require('targz')
 const url = require('url')
 const fs = require('fs')
+const settings = require('electron-settings');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+
+settings.defaults({
+  font_size: 23,
+  numbers_letters: 2,
+  dark_mode: 1
+});
 
 function createWindow () {
   // Create the browser window.
@@ -108,7 +115,7 @@ function createWindow () {
 
 function openSettings () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 500, height: 500,backgroundColor: '#000',titleBarStyle:'hidden'})
+  mainWindow = new BrowserWindow({width: 500, height: 150,backgroundColor: '#000',titleBarStyle:'hidden'})
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
