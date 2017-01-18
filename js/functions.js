@@ -1,3 +1,4 @@
+// synchronize the two scrolls
 $(document).ready(function() {
   $("#counter").scroll(function () { 
           $("#main_text").scrollTop($("#counter").scrollTop());
@@ -10,16 +11,18 @@ $(document).ready(function() {
 
 });
 
+// count the fonetic syllable for a sentence, tested only in pt/br
 function countSilabas(line) {
-    var almost_done = line.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").split(" ") ;
-    var silabas_counter = 0 ;
-    var list_consoantes =  Array.from("bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ")
+    var almost_done = line.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").split(" ") ; // remove pontuations
+    var silabas_counter = 0 ; // main counter
+    var list_consoantes =  Array.from("bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ") ;
     var list_vogais = Array.from("aeiouAEIOUõã") ;
     var list_acentuadas = Array.from("àáâäåæèéêëæìíîïòóôöøùúûü");
-    var f_v = false ;
+    var f_v = false ; // flag if the last letter was a vogal
     var p_c = false ;
     console.log(almost_done) ;
 
+    // holy shit that code is ugly
     for (var i = 0 ; i <  almost_done.length; i++) {
       for (var y = 0; y < almost_done[i].length ;y++) {
         if (list_acentuadas.indexOf(almost_done[i][y]) > -1) {
@@ -70,6 +73,7 @@ function countSilabas(line) {
     return silabas_counter ;
 }
 
+// called every time the text changes, send each to count and update the left bar
 function textarea_silabas() {
   var textarea = document.getElementById('main_text').value ;
   var lines = textarea.split("\n") ;

@@ -1,5 +1,5 @@
 const settings = require('electron-settings');
-
+// get the user settings
 $(document).ready(function() {
   settings.get('font_size').then(val => {
   	document.getElementById('font_size').value = val ;
@@ -9,8 +9,7 @@ $(document).ready(function() {
   });
 });
 
+// save the user settings
 function saveSettings() {
-	settings.set("font_size",document.getElementById('font_size').value).then(() => {
-	  settings.set("numbers_letters",document.getElementById('letters').value);
-	}); //weird async
+  settings.set("numbers_letters",document.getElementById('letters').value);
 }
