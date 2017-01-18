@@ -86,12 +86,13 @@ function getRimes() {
     var letters_number = val ;
     console.log(letters_number) ;
     // uses substr to get the last x letters_number
-    var query = "SELECT * from words_ptbr where substr(word.word,-"+letters_number.toString()+") == '"+word.substr(-letters_number)+"'" ;
+    var query = "SELECT * from words_ptbr where substr(word,-"+letters_number.toString()+") == '"+word.substr(-letters_number)+"'" ;
     console.log(query) ;
     var rimes = db.exec(query) ; // sql injection lols
+    console.log(rimes[0]);
     for (var i = 0 ; i < rimes[0].values.length ; i++) {
       var li = document.createElement('li') ;
-      li.appendChild(document.createTextNode(rimes[0].values[i][1])) ;
+      li.appendChild(document.createTextNode(rimes[0].values[i])) ;
       document.getElementById('rime_list').appendChild(li) ;
     }
   });
