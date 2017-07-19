@@ -20,6 +20,7 @@ ipcRenderer.on('get-rime', function() {
 });
 
 ipcRenderer.on('save-file', function() {
+  console.log(file_path)
 	if (file_path === "") {
 		saveAs() ;
 	} else {
@@ -59,8 +60,9 @@ function saveFile() {
 
 function saveAs() {
     let text = document.getElementById('main_text').value;
-    dialog.showSaveDialog(function(file_path) {
-        fs.writeFile(file_path, text, function(err) {
+    dialog.showSaveDialog(function(file) {
+        fs.writeFile(file, text, function(err) {
+            file_path = file ;
             if(err) {
                 return console.log(err);
             }
