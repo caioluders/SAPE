@@ -81,22 +81,24 @@ function openFile() {
 };
 
 function getRimes() {
-  document.getElementById("rime_sidebar").style.width = "12em";
+  document.getElementById("rime_sidebar").style.width = "12em"; // open sidebar
   var word = window.getSelection().toString() ;
   document.getElementById('rime_list').innerHTML = "" ;
   settings.get('numbers_letters').then(val => { // god I don't know how to async
     var letters_number = val ;
-    console.log(letters_number) ;
-    // uses substr to get the last x letters_number
-    var query = "SELECT * from words_ptbr where substr(word,-"+letters_number.toString()+") == '"+word.substr(-letters_number)+"'" ;
-    console.log(query) ;
-    var rimes = db.exec(query) ; // sql injection lols
-    console.log(rimes[0]);
-    for (var i = 0 ; i < rimes[0].values.length ; i++) {
-      var li = document.createElement('li') ;
-      li.appendChild(document.createTextNode(rimes[0].values[i])) ;
-      document.getElementById('rime_list').appendChild(li) ;
-    }
+    settings.get('language').then(lan => { // I REALLY DON'T KNOW HOW TO ASYNC
+      // uses substr to get the last x letters_number
+      var language = lan ;
+      var query = "SELECT * from words_"+lan+" where substr(word,-"+letters_number.toString()+") == '"+word.substr(-letters_number)+"'" ;
+      console.log(lan) ;
+      var rimes = db.exec(query) ; // sql injection, lols
+      console.log(rimes[0]);
+      for (var i = 0 ; i < rimes[0].values.length ; i++) {
+        var li = document.createElement('li') ;
+        li.appendChild(document.createTextNode(rimes[0].values[i])) ;
+        document.getElementById('rime_list').appendChild(li) ;
+      }
+    });
   });
  
 }

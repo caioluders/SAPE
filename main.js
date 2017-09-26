@@ -125,6 +125,8 @@ function openSettings () {
 
   mainWindow.loadURL("file://" + __dirname + "/settings.html");
 
+  mainWindow.webContents.openDevTools()
+
   mainWindow.webContents.executeJavaScript(`
     var path = require('path');
     module.paths.push(path.resolve('node_modules'));
