@@ -87,7 +87,7 @@ function getRimes() {
   settings.get('numbers_letters').then(val => { // god I don't know how to async
     var letters_number = val ;
     settings.get('language').then(lan => { // I REALLY DON'T KNOW HOW TO ASYNC
-      // uses substr to get the last x letters_number
+      // uses substr to get the last n letters_number
       var language = lan ;
       var query = "SELECT * from words_"+lan+" where substr(word,-"+letters_number.toString()+") == '"+word.substr(-letters_number)+"'" ;
       console.log(lan) ;

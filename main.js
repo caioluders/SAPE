@@ -13,15 +13,15 @@ const settings = require('electron-settings');
 
 let mainWindow
 
-settings.defaults({
+settings.setAll({
   font_size: 23,
   numbers_letters: 2,
   dark_mode: 1
 });
 
 function createWindow () {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1300, height: 800,backgroundColor: '#000',titleBarStyle:'hidden'})
+  // Create the browser window.title
+  mainWindow = new BrowserWindow({width: 1300, height: 800,backgroundColor: '#000',titleBarStyle:'hiddenInset'})
 
   // Check if the word database exists , decompress it if not
   // 100mb is tooooo much
@@ -87,7 +87,7 @@ function createWindow () {
           ]}, {
         label: "Edit",
         submenu: [
-            { label: "Rimes", accelerator:"CmdOrCtrl+r",click:function() {
+            { label: "Rime", accelerator:"CmdOrCtrl+r",click:function() {
                 var focusedWindow = BrowserWindow.getFocusedWindow();
                 focusedWindow.webContents.send('get-rime');
             } },
