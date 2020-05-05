@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="js/functions.js"></script>
+  <div style="-webkit-app-region: no-drag" id="rime_sidebar" class="rime_sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <ul id="rime_list">
+    </ul>  
+  </div>
+  <link rel="stylesheet" href='css/main.css'> 
+  <head>
+    <meta charset="UTF-8">
+    <title>SAPE</title>
+  </head>
+  
+ 
+  <body style="-webkit-app-region: drag">
+    <textarea style="-webkit-app-region: no-drag" id="counter" class="counter" disabled="true"></textarea>
+    <textarea style="-webkit-app-region: no-drag" id="main_text" class="main_text" onkeyup="textarea_silabas()"></textarea>    
+  </body>
+
+  <script>
+    require('./app.js');
+    require('./renderer.js') ;
+  </script>
+
+</html>
