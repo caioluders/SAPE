@@ -18,14 +18,10 @@ class SAPE(QMainWindow):
 		self.setWindowTitle("SAPE - Software Assisted Poetry Editor")
 		self.setWindowFlags(Qt.FramelessWindowHint)
 		self.resize(475, 253)
-		self.actionOpen = QAction(self)
-		self.actionOpen.setObjectName(u"actionOpen")
-		self.actionExit = QAction(self)
-		self.actionExit.setObjectName(u"actionExit")
-		self.actionSave = QAction(self)
-		self.actionSave.setObjectName(u"actionSave")	
+		
 		self.close_button = QPushButton("X")	
 		self.close_button.clicked.connect(lambda _: [self.close_button.hide(),self.rhymes_box.hide()])
+		self.close_button.setMaximumSize(QSize(35,35))
 
 		self.text_edit = QTextEdit()
 		self.text_edit.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -43,8 +39,11 @@ class SAPE(QMainWindow):
 		self.syllabes_count.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.syllabes_count.setReadOnly(True)
 		self.syllabes_count.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		
 		self.rhymes_box = QListWidget()	
 		self.rhymes_box.itemClicked.connect(self.rhyme_clicked)
+		self.rhymes_box.setMinimumSize(QSize(200,16777215))
+		self.rhymes_box.setMaximumSize(QSize(200,16777215))
 
 		self.text_edit.horizontalScrollBar().valueChanged.connect(self.syllabes_count.horizontalScrollBar().setValue)
 		self.syllabes_count.horizontalScrollBar().valueChanged.connect(self.text_edit.horizontalScrollBar().setValue)
@@ -55,11 +54,12 @@ class SAPE(QMainWindow):
 		self.setCentralWidget(central_widget)
 		self.grid_layout = QGridLayout(central_widget)
 		self.grid_layout.addWidget(self.syllabes_count,0,0,1,1)
-		self.grid_layout.addWidget(self.text_edit,0,1,-1,1 )
+		self.grid_layout.addWidget(self.text_edit,0,1,1,1 )
 
 
 		
 
+		self.fname = None
 
 		self.settings_popup = None
 
@@ -83,10 +83,16 @@ class SAPE(QMainWindow):
 
 	def context_menu(self) :
 		menu = QMenu(self)
+		openAction = QAction("Abrir",self)
+		openAction.triggered.connect(self.open_file)
+		saveAction = QAction("Salvar",self)
+		saveAction.triggered.connect(self.save_file)
 		rhymeAction = QAction("Procurar rima", self)
 		rhymeAction.triggered.connect(self.find_rhyme)
 		settingsAction = QAction("Preferencias", self)
 		settingsAction.triggered.connect(self.show_settings)
+		menu.addAction(openAction)
+		menu.addAction(saveAction)
 		menu.addAction(rhymeAction)
 		menu.addAction(settingsAction)
 		menu.exec_(QCursor.pos())
@@ -103,8 +109,8 @@ class SAPE(QMainWindow):
 		self.rhymes_box.show()
 		self.close_button.show()
 
-		self.grid_layout.addWidget(self.close_button,0,5,1,1)
-		self.grid_layout.addWidget(self.rhymes_box,1,5,1,4)
+		self.grid_layout.addWidget(self.rhymes_box,0,3,1,1)
+		self.grid_layout.addWidget(self.close_button,0,3,1,1)
 
 	def rhyme_clicked( self, item ) :
 		self.clipboard.setText(str(item.text()))
@@ -113,6 +119,18 @@ class SAPE(QMainWindow):
 		self.settings_popup = SettingsPage()
 		self.settings_popup.setGeometry(QRect(100,100,400,200))
 		self.settings_popup.show()
+
+	def open_file(self) :
+		self.fname = QFileDialog.getOpenFileName(self,'Abrir','/')
+		f = open(self.fname[0],'r')
+		with f :
+			data = f.read()
+			self.text_edit.setText(data)
+
+	def save_file(self) :
+		fw = open(self.fname[0],'w')
+		with fw :
+			fw.write(self.text_edit.toPlainText())
 
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
