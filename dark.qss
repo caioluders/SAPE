@@ -48,7 +48,7 @@ QToolTip
 QWidget
 {
     color: #eff0f1;
-    background-color: #31363b;
+    background-color: #000000;
     selection-background-color:#3daee9;
     selection-color: #eff0f1;
     background-clip: border;
@@ -518,14 +518,14 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical
 
 QTextEdit
 {
-    background-color: #232629;
+    background-color: #000000;
     color: #eff0f1;
     border: 0.1ex solid #76797c;
 }
 
 QPlainTextEdit
 {
-    background-color: #232629;;
+    background-color: #000000;
     color: #eff0f1;
     border-radius: 0.2ex;
     border: 0.1ex solid #76797c;
