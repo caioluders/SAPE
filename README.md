@@ -1,6 +1,6 @@
 # TO-DO
 
-[X] Rhyme search
-[ ] Phonetic Syllable Counter
-[ ] Settings page
-[ ] File IO
+- [X] Rhyme search
+- [ ] Phonetic Syllable Counter
+- [ ] Settings page
+- [X] File IO
