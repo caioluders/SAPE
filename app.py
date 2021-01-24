@@ -1,7 +1,10 @@
-import sys , requests
+import sys , requests, random
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
+
+
+rhymes_highlight = {}
 
 def findall(p, s):
 	'''Yields all the positions of
@@ -33,16 +36,17 @@ class MyHighlighter( QSyntaxHighlighter ):
 		brush = QBrush( Qt.darkBlue, Qt.SolidPattern )
 		keyword.setForeground( brush )
 		keyword.setFontWeight( QFont.Bold )
-		keywords = [ "break", "else", "for", "if", "in",
-	                            "next", "repeat", "return", "switch",
-	                            "try", "while" ]
+		keywords = rhymes_highlight
+
 		for word in keywords:
 			pattern = word
 			rule = HighlightingRule( pattern, keyword )
 			self.highlightingRules.append( rule )
 
 	def highlightBlock( self, text ):
-		for rule in self.highlightingRules:
+		for rule in rhymes_highlight.values() :
+			if rule == None : 
+				continue
 			expression = rule.pattern 
 			index = findall(expression,text)
 			length = len(expression)
@@ -70,7 +74,9 @@ class SAPE(QMainWindow):
 		self.text_edit.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.text_edit.installEventFilter(self)
 		self.text_edit.textChanged.connect(self.add_syllabes)
+
 		highlither = MyHighlighter( self.text_edit, "Classic" )
+		
 		self.syllabes_count = QTextEdit()
 		sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
 		sizePolicy1.setHorizontalStretch(0)
@@ -88,7 +94,7 @@ class SAPE(QMainWindow):
 		self.rhymes_box.setMinimumSize(QSize(200,16777215))
 		self.rhymes_box.setMaximumSize(QSize(200,16777215))
 
-		self.text_edit.horizontalScrollBar().valueChanged.connect(self.syllabes_count.horizontalScrollBar().setValue)
+		self.text_edit.horizontalScrollBar().valueChanged.connect(self.syllabes_count.horizontalScrollBar().setValue) # trying to sync scrollbars
 		self.syllabes_count.horizontalScrollBar().valueChanged.connect(self.text_edit.horizontalScrollBar().setValue)
 
 		self.clipboard = QGuiApplication.clipboard()
@@ -107,10 +113,23 @@ class SAPE(QMainWindow):
 		self.connect(self.text_edit,SIGNAL('customContextMenuRequested(const QPoint &)'), self.context_menu)
 
 	def add_syllabes(self) :
-		poem = self.text_edit.toPlainText().split("\n")
-
+		poem = self.text_edit.toPlainText()
+		poem_splitted = poem.split(" ")
 		syllabes_text = ""
 
+		print(rhymes_highlight)
+
+		for w in poem_splitted : 
+			if w[-2:] not in rhymes_highlight.keys() :
+				rhymes_highlight[ w[-2:] ] = None
+
+			else : 
+				keyword = QTextCharFormat()
+				brush = QBrush( random.choice([Qt.white , Qt.black , Qt.red , Qt.darkRed , Qt.green , Qt.darkGreen , Qt.blue , Qt.darkBlue , Qt.cyan , Qt.darkCyan , Qt.magenta , Qt.darkMagenta , Qt.yellow , Qt.darkYellow , Qt.gray , Qt.darkGray , Qt.lightGray]), Qt.SolidPattern )
+				keyword.setForeground( brush )
+
+				rule = HighlightingRule( w[-2:], keyword )
+				rhymes_highlight[ w[-2:] ] = rule
 
 		for p in range(len(poem)) :
 			syllabes_text += str(p)+"\n"	
