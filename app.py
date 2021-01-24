@@ -117,7 +117,8 @@ class SAPE(QMainWindow):
 		poem_splitted = poem.split(" ")
 		syllabes_text = ""
 
-		print(rhymes_highlight)
+		global rhymes_highlight
+		rhymes_highlight = {}
 
 		for w in poem_splitted : 
 			if w[-2:] not in rhymes_highlight.keys() :
@@ -130,6 +131,7 @@ class SAPE(QMainWindow):
 
 				rule = HighlightingRule( w[-2:], keyword )
 				rhymes_highlight[ w[-2:] ] = rule
+
 
 		for p in range(len(poem)) :
 			syllabes_text += str(p)+"\n"	
