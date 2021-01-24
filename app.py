@@ -12,11 +12,47 @@ class SettingsPage(QWidget) :
 		dc.drawLine(0,0,100,100)
 		dc.drawLine(100,0,0,100)
 
+class MyHighlighter( QSyntaxHighlighter ):
+
+	def __init__( self, parent, theme ):
+		QSyntaxHighlighter.__init__( self, parent )
+		self.parent = parent
+		keyword = QTextCharFormat()
+
+		self.highlightingRules = []
+
+	  # keyword
+		brush = QBrush( Qt.darkBlue, Qt.SolidPattern )
+		keyword.setForeground( brush )
+		keyword.setFontWeight( QFont.Bold )
+		keywords = [ "break", "else", "for", "if", "in",
+	                            "next", "repeat", "return", "switch",
+	                            "try", "while" ]
+		for word in keywords:
+			pattern = QRegExp("\\b" + word + "\\b")
+			rule = HighlightingRule( pattern, keyword )
+			self.highlightingRules.append( rule )
+
+	def highlightBlock( self, text ):
+		for rule in self.highlightingRules:
+			expression = QRegExp( rule.pattern )
+			index = expression.indexIn( text )
+			while index >= 0:
+				length = expression.matchedLength()
+				self.setFormat( index, length, rule.format )
+				index = text.indexOf( expression, index + length )
+		self.setCurrentBlockState( 0 )
+
+class HighlightingRule():
+	def __init__( self, pattern, format ):
+		self.pattern = pattern
+		self.format = format
+
 class SAPE(QMainWindow):
 	def __init__(self):
 		super(SAPE, self).__init__()
 		self.setWindowTitle("SAPE - Software Assisted Poetry Editor")
-		self.setWindowFlags(Qt.FramelessWindowHint)
+		#self.setWindowFlags(Qt.FramelessWindowHint) # it bugs on MacOS
 		self.resize(475, 253)
 		
 		self.close_button = QPushButton("X")	
@@ -26,8 +62,8 @@ class SAPE(QMainWindow):
 		self.text_edit = QTextEdit()
 		self.text_edit.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.text_edit.installEventFilter(self)
-		self.text_edit.textChanged.connect(self.add_syllabes)
-
+		self.text_edit.textChanged.connect(self.add_syllabes_and_highlight_rhymes)
+		highlither = MyHighlighter( self.text_edit, "Classic" )
 		self.syllabes_count = QTextEdit()
 		sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
 		sizePolicy1.setHorizontalStretch(0)
@@ -57,8 +93,6 @@ class SAPE(QMainWindow):
 		self.grid_layout.addWidget(self.text_edit,0,1,1,1 )
 
 
-		
-
 		self.fname = None
 
 		self.settings_popup = None
@@ -71,8 +105,9 @@ class SAPE(QMainWindow):
 				#self.add_syllabes()
 			#return super().eventFilter(obj, event)
 
-	def add_syllabes(self) :
+	def add_syllabes_and_highlight_rhymes(self) :
 		poem = self.text_edit.toPlainText().split("\n")
+
 		syllabes_text = ""
 
 
