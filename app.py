@@ -3,6 +3,14 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
+def findall(p, s):
+	'''Yields all the positions of
+	the pattern p in the string s.'''
+	i = s.find(p)
+	while i != -1:
+		yield i
+		i = s.find(p, i+1)
+
 class SettingsPage(QWidget) :
 	def __init__(self) :
 		QWidget.__init__(self)
@@ -29,18 +37,17 @@ class MyHighlighter( QSyntaxHighlighter ):
 	                            "next", "repeat", "return", "switch",
 	                            "try", "while" ]
 		for word in keywords:
-			pattern = QRegExp("\\b" + word + "\\b")
+			pattern = word
 			rule = HighlightingRule( pattern, keyword )
 			self.highlightingRules.append( rule )
 
 	def highlightBlock( self, text ):
 		for rule in self.highlightingRules:
-			expression = QRegExp( rule.pattern )
-			index = expression.indexIn( text )
-			while index >= 0:
-				length = expression.matchedLength()
-				self.setFormat( index, length, rule.format )
-				index = text.indexOf( expression, index + length )
+			expression = rule.pattern 
+			index = findall(expression,text)
+			length = len(expression)
+			for m in index : 
+				self.setFormat( m, length, rule.format )
 		self.setCurrentBlockState( 0 )
 
 class HighlightingRule():
@@ -62,7 +69,7 @@ class SAPE(QMainWindow):
 		self.text_edit = QTextEdit()
 		self.text_edit.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.text_edit.installEventFilter(self)
-		self.text_edit.textChanged.connect(self.add_syllabes_and_highlight_rhymes)
+		self.text_edit.textChanged.connect(self.add_syllabes)
 		highlither = MyHighlighter( self.text_edit, "Classic" )
 		self.syllabes_count = QTextEdit()
 		sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
@@ -99,13 +106,7 @@ class SAPE(QMainWindow):
 
 		self.connect(self.text_edit,SIGNAL('customContextMenuRequested(const QPoint &)'), self.context_menu)
 
-	#def eventFilter(self, obj, event):
-		#if event.type() == QtCore.QEvent.KeyPress and obj is self.text_edit:
-			#if self.text_edit.hasFocus():
-				#self.add_syllabes()
-			#return super().eventFilter(obj, event)
-
-	def add_syllabes_and_highlight_rhymes(self) :
+	def add_syllabes(self) :
 		poem = self.text_edit.toPlainText().split("\n")
 
 		syllabes_text = ""
