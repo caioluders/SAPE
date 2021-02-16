@@ -2,7 +2,7 @@ import sys , requests, random
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-
+from g2p.g2p import G2PTranscriber
 
 rhymes_highlight = {}
 
@@ -121,6 +121,8 @@ class SAPE(QMainWindow):
 		rhymes_highlight = {}
 
 		for w in poem_splitted : 
+			
+			w_phonetic = G2PTranscriber(w.encode("utf-8").lower(), algorithm="ceci")
 			if w[-2:] not in rhymes_highlight.keys() :
 				rhymes_highlight[ w[-2:] ] = None
 
