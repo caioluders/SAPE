@@ -28,7 +28,7 @@ class CECISyllableSeparator(object):
     def __init__(self, word):
         try:
             self.word = word.decode("utf-8").lower()
-        except (UnicodeDecodeError, UnicodeEncodeError):
+        except:
             self.word = word.lower()
 
     def _get(self, la, le):
