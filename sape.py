@@ -114,28 +114,40 @@ class SAPE(QMainWindow):
 
 	def add_syllabes(self) :
 		poem = self.text_edit.toPlainText()
-		poem_splitted = poem.split(" ")
+		poem_lines = poem.split("\n")
 		syllabes_text = ""
 
 		global rhymes_highlight
 		rhymes_highlight = {}
+		syllables_list = []
 
-		for w in poem_splitted : 
-			
-			w_phonetic = G2PTranscriber(w.encode("utf-8").lower(), algorithm="ceci")
-			if w[-2:] not in rhymes_highlight.keys() :
-				rhymes_highlight[ w[-2:] ] = None
+		for pl in poem_lines :
+		    pl_n = 0
+		    for w in pl.split(" ") : 
+			    
+			    w_phonetic = G2PTranscriber(w.encode("utf-8").lower(), algorithm="ceci")
+			    w_syllables = w_phonetic.get_syllables()
+			    w_syllables_phonetic = w_phonetic.transcriber()
+			    print(w_syllables)
+			    pl_n += len(w_syllables)
 
-			else : 
-				keyword = QTextCharFormat()
-				brush = QBrush( random.choice([Qt.white , Qt.black , Qt.red , Qt.darkRed , Qt.green , Qt.darkGreen , Qt.blue , Qt.darkBlue , Qt.cyan , Qt.darkCyan , Qt.magenta , Qt.darkMagenta , Qt.yellow , Qt.darkYellow , Qt.gray , Qt.darkGray , Qt.lightGray]), Qt.SolidPattern )
-				keyword.setForeground( brush )
+			    for s in w_syllables_phonetic : 
+				    if len(s) >= 2 :
+					    if s not in rhymes_highlight.keys() :
+						    rhymes_highlight[ s ] = None
 
-				rule = HighlightingRule( w[-2:], keyword )
-				rhymes_highlight[ w[-2:] ] = rule
+					    else : 
+						    keyword = QTextCharFormat()
+						    brush = QBrush( random.choice([Qt.white , Qt.black , Qt.red , Qt.darkRed , Qt.green , Qt.darkGreen , Qt.blue , Qt.darkBlue , Qt.cyan , Qt.darkCyan , Qt.magenta , Qt.darkMagenta , Qt.yellow , Qt.darkYellow , Qt.gray , Qt.darkGray , Qt.lightGray]), Qt.SolidPattern )
+						    keyword.setForeground( brush )
+
+						    rule = HighlightingRule( w[-2:], keyword )
+						    rhymes_highlight[ w[-2:] ] = rule
+
+		    syllables_list.append(pl_n)
 
 
-		for p in range(len(poem)) :
+		for p in syllables_list :
 			syllabes_text += str(p)+"\n"	
 
 		self.syllabes_count.setPlainText(syllabes_text)

@@ -1706,4 +1706,4 @@ class G2PTranscriber(object):
         # Get stress phonetic syllable boundaries
         a, b = self.stress.get_stress_phonetic_syllable(self.syllables, w)
 
-        return (w[:a] + "ˈ" + w[a:]).replace("-", ".")
+        return (w[:a] + "ˈ" + w[a:]).replace("-", ".").split(".")
