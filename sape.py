@@ -45,8 +45,6 @@ class MyHighlighter( QSyntaxHighlighter ):
 
 	def highlightBlock( self, text ):
 		for rule in rhymes_highlight.values() :
-			if rule == None : 
-				continue
 			expression = rule.pattern 
 			index = findall(expression,text)
 			length = len(expression)
@@ -139,7 +137,6 @@ class SAPE(QMainWindow):
 						    rule = HighlightingRule( w_syllables[si], keyword )
 						    rhymes_highlight[ w_syllables[si] ] = rule
 		    syllables_list.append(pl_n)
-
 
 		for p in syllables_list :
 			syllabes_text += str(p)+"\n"	
