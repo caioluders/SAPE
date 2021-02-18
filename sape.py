@@ -118,7 +118,6 @@ class SAPE(QMainWindow):
 		syllabes_text = ""
 
 		global rhymes_highlight
-		rhymes_highlight = {}
 		syllables_list = []
 
 		for pl in poem_lines :
@@ -128,22 +127,17 @@ class SAPE(QMainWindow):
 			    w_phonetic = G2PTranscriber(w.encode("utf-8").lower(), algorithm="ceci")
 			    w_syllables = w_phonetic.get_syllables()
 			    w_syllables_phonetic = w_phonetic.transcriber()
-			    print(w_syllables)
+			    print(rhymes_highlight)
 			    pl_n += len(w_syllables)
-
-			    for s in w_syllables_phonetic : 
-				    if len(s) >= 2 :
-					    if s not in rhymes_highlight.keys() :
-						    rhymes_highlight[ s ] = None
-
-					    else : 
+			    for si in range(0,len(w_syllables)) : 
+				    if len(w_syllables[si]) >= 2 :
+					    if (w_syllables[si] not in rhymes_highlight.keys()) and (poem.count(w_syllables[si]) >= 2):
 						    keyword = QTextCharFormat()
-						    brush = QBrush( random.choice([Qt.white , Qt.black , Qt.red , Qt.darkRed , Qt.green , Qt.darkGreen , Qt.blue , Qt.darkBlue , Qt.cyan , Qt.darkCyan , Qt.magenta , Qt.darkMagenta , Qt.yellow , Qt.darkYellow , Qt.gray , Qt.darkGray , Qt.lightGray]), Qt.SolidPattern )
-						    keyword.setForeground( brush )
+						    brush = QBrush( random.choice([ Qt.red , Qt.darkRed , Qt.green , Qt.darkGreen , Qt.blue , Qt.darkBlue , Qt.cyan , Qt.darkCyan , Qt.magenta , Qt.darkMagenta , Qt.yellow , Qt.darkYellow , Qt.gray , Qt.darkGray , Qt.lightGray]), Qt.SolidPattern )
+						    keyword.setBackground( brush )
 
-						    rule = HighlightingRule( w[-2:], keyword )
-						    rhymes_highlight[ w[-2:] ] = rule
-
+						    rule = HighlightingRule( w_syllables[si], keyword )
+						    rhymes_highlight[ w_syllables[si] ] = rule
 		    syllables_list.append(pl_n)
 
 
