@@ -32,6 +32,8 @@ class SettingsPage(QWidget) :
 		self.settings.setValue("Highlight",self.rhymes_highlight.isChecked())
 		self.settings.setValue("Rhymes",self.rhymes_box.value())
 
+		print(self.settings.value("Rhymes"))
+
 	def paintEvent(self, e):
 		layout = QVBoxLayout()
 
@@ -103,6 +105,13 @@ class SAPE(QMainWindow):
 
 
 		self.settings = QSettings("SAPE","SAPE")
+
+		if self.settings.value("Highlight") == None :
+			self.settings.setValue("Highlight",True)
+		if self.settings.value("Rhymes") == None :
+			self.settings.setValue("Rhymes",3)
+		if self.settings.value("Font") == None :
+			self.settings.setValue("Font",QFont("Helvetica", 12))
 
 		self.text_edit = QTextEdit()
 		self.text_edit.setContextMenuPolicy(Qt.CustomContextMenu)
