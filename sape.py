@@ -6,6 +6,8 @@ from g2p.g2p import G2PTranscriber
 
 rhymes_highlight = {}
 
+# https://build-system.fman.io/
+
 def findall(p, s):
 	'''Yields all the positions of
 	the pattern p in the string s.'''
@@ -15,13 +17,44 @@ def findall(p, s):
 		i = s.find(p, i+1)
 
 class SettingsPage(QWidget) :
+
 	def __init__(self) :
 		QWidget.__init__(self)
+		self.settings = QSettings("SAPE","SAPE")
+
+	def getfont(self) :
+		ok, font = QFontDialog.getFont() 
+
+		if ok :
+			self.settings.setValue("Font",font)
+
+	def save(self) :
+		self.settings.setValue("Highlight",self.rhymes_highlight.isChecked())
+		self.settings.setValue("Rhymes",self.rhymes_box.value())
 
 	def paintEvent(self, e):
-		dc = QPainter(self)
-		dc.drawLine(0,0,100,100)
-		dc.drawLine(100,0,0,100)
+		layout = QVBoxLayout()
+
+		self.font_picker = QPushButton("Escolher fonte")
+		self.font_picker.clicked.connect(self.getfont)		
+		layout.addWidget(self.font_picker)
+
+		self.rhymes_highlight = QCheckBox("Destacar rimas",self)
+		layout.addWidget(self.rhymes_highlight)
+
+		self.rhymes_label = QLabel("Procurar rimas pelo menos")
+		layout.addWidget(self.rhymes_label)
+
+		self.rhymes_box = QSpinBox()
+		layout.addWidget(self.rhymes_box)
+		
+
+		self.save_btn = QPushButton("Salvar")
+		self.save_btn.clicked.connect(self.save)
+		layout.addWidget(self.save_btn)
+		
+
+		self.setLayout(layout)
 
 class MyHighlighter( QSyntaxHighlighter ):
 
@@ -67,6 +100,9 @@ class SAPE(QMainWindow):
 		self.close_button = QPushButton("X")	
 		self.close_button.clicked.connect(lambda _: [self.close_button.hide(),self.rhymes_box.hide()])
 		self.close_button.setMaximumSize(QSize(35,35))
+
+
+		self.settings = QSettings("SAPE","SAPE")
 
 		self.text_edit = QTextEdit()
 		self.text_edit.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -129,7 +165,7 @@ class SAPE(QMainWindow):
 			    pl_n += len(w_syllables)
 			    for si in range(0,len(w_syllables)) : 
 				    if len(w_syllables[si]) >= 2 :
-					    if (w_syllables[si] not in rhymes_highlight.keys()) and (poem.count(w_syllables[si]) >= 2):
+					    if (w_syllables[si] not in rhymes_highlight.keys()) :
 						    keyword = QTextCharFormat()
 						    brush = QBrush( random.choice([ Qt.red , Qt.darkRed , Qt.green , Qt.darkGreen , Qt.blue , Qt.darkBlue , Qt.cyan , Qt.darkCyan , Qt.magenta , Qt.darkMagenta , Qt.yellow , Qt.darkYellow , Qt.gray , Qt.darkGray , Qt.lightGray]), Qt.SolidPattern )
 						    keyword.setBackground( brush )
@@ -151,7 +187,7 @@ class SAPE(QMainWindow):
 		saveAction.triggered.connect(self.save_file)
 		rhymeAction = QAction("Procurar rima", self)
 		rhymeAction.triggered.connect(self.find_rhyme)
-		settingsAction = QAction("Preferencias", self)
+		settingsAction = QAction("Preferências", self)
 		settingsAction.triggered.connect(self.show_settings)
 		menu.addAction(openAction)
 		menu.addAction(saveAction)
@@ -164,7 +200,8 @@ class SAPE(QMainWindow):
 		selected_word = self.text_edit.textCursor().selectedText()
 		if len(selected_word) < 3 :
 			return 
-		rhymes = [ x["word"] for x in requests.get(API_URL+selected_word[-3:]).json() ]
+		suffix_size = self.settings.value("Rhymes")
+		rhymes = [ x["word"] for x in requests.get(API_URL+selected_word[-suffix_size:]).json() ]
 		self.rhymes_box.clear()
 		self.rhymes_box.addItems(rhymes)
 
