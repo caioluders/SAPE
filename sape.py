@@ -32,8 +32,12 @@ class SettingsPage(QWidget) :
 			sape.text_edit.setCurrentFont(font)
 			sape.text_edit.insertPlainText(temp_text)
 
-	def rhymes_highlight_changed(self):
-		self.settings.setValue("Highlight",self.rhymes_highlight.checkState())
+	def rhymes_highlight_changed(self, x):
+		self.settings.setValue("Highlight",Qt.CheckState(Qt.Checked) if x == 2 else Qt.CheckState(Qt.Unchecked) )
+		print(self.settings.value("Highlight"))
+		temp_text = sape.text_edit.toPlainText()
+		sape.text_edit.clear()
+		sape.text_edit.insertPlainText(temp_text)
 
 	def rhymes_box_value(self, i) :
 		self.settings.setValue("Rhymes",i+3)
@@ -47,6 +51,7 @@ class SettingsPage(QWidget) :
 
 		self.rhymes_highlight = QCheckBox("Destacar rimas",self)
 		self.rhymes_highlight.stateChanged.connect(self.rhymes_highlight_changed)
+		self.rhymes_highlight.setCheckState(self.settings.value("Highlight"))
 		layout.addWidget(self.rhymes_highlight)
 
 		self.rhymes_label = QLabel("Procurar rimas pelo menos")
@@ -109,12 +114,13 @@ class SAPE(QMainWindow):
 
 		self.settings = QSettings("SAPE","SAPE")
 
-		if self.settings.value("Highlight") == None :
-			self.settings.setValue("Highlight",True)
+		#if self.settings.value("Highlight") == None :
+		self.settings.setValue("Highlight",Qt.CheckState(Qt.Checked))
 		if self.settings.value("Rhymes") == None :
 			self.settings.setValue("Rhymes",3)
 		if self.settings.value("Font") == None :
 			self.settings.setValue("Font",QFont("Helvetica", 12))
+
 
 		self.text_edit = QTextEdit()
 		self.text_edit.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -175,15 +181,16 @@ class SAPE(QMainWindow):
 			    w_syllables_phonetic = w_phonetic.transcriber()
 			    print(rhymes_highlight)
 			    pl_n += len(w_syllables)
-			    for si in range(0,len(w_syllables)) : 
-				    if len(w_syllables[si]) >= 2 :
-					    if (w_syllables[si] not in rhymes_highlight.keys()) :
-						    keyword = QTextCharFormat()
-						    brush = QBrush( random.choice([ Qt.red , Qt.darkRed , Qt.green , Qt.darkGreen , Qt.blue , Qt.darkBlue , Qt.cyan , Qt.darkCyan , Qt.magenta , Qt.darkMagenta , Qt.yellow , Qt.darkYellow , Qt.gray , Qt.darkGray , Qt.lightGray]), Qt.SolidPattern )
-						    keyword.setBackground( brush )
+			    if self.settings.value("Highlight") == Qt.Checked :
+				    for si in range(0,len(w_syllables)) : 
+					    if len(w_syllables[si]) >= 2 :
+						    if (w_syllables[si] not in rhymes_highlight.keys()) :
+							    keyword = QTextCharFormat()
+							    brush = QBrush( random.choice([ Qt.red , Qt.darkRed , Qt.green , Qt.darkGreen , Qt.blue , Qt.darkBlue , Qt.cyan , Qt.darkCyan , Qt.magenta , Qt.darkMagenta , Qt.yellow , Qt.darkYellow , Qt.gray , Qt.darkGray , Qt.lightGray]), Qt.SolidPattern )
+							    keyword.setBackground( brush )
 
-						    rule = HighlightingRule( w_syllables[si], keyword )
-						    rhymes_highlight[ w_syllables[si] ] = rule
+							    rule = HighlightingRule( w_syllables[si], keyword )
+							    rhymes_highlight[ w_syllables[si] ] = rule
 		    syllables_list.append(pl_n)
 
 		for p in syllables_list :
@@ -213,7 +220,6 @@ class SAPE(QMainWindow):
 		if len(selected_word) < 3 :
 			return 
 		suffix_size = self.settings.value("Rhymes")
-		print(suffix_size)
 		rhymes = [ x["word"] for x in requests.get(API_URL+selected_word[-suffix_size:]).json() ]
 		self.rhymes_box.clear()
 		self.rhymes_box.addItems(rhymes)
