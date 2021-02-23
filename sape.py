@@ -28,11 +28,11 @@ class SettingsPage(QWidget) :
 		if ok :
 			self.settings.setValue("Font",font)
 
-	def save(self) :
-		self.settings.setValue("Highlight",self.rhymes_highlight.isChecked())
+	def rhymes_highlight_changed(self):
+		self.settings.setValue("Rhymes",i+3)
 
 	def rhymes_box_value(self, i) :
-		self.settings.setValue("Rhymes",i+3)
+		self.settings.setValue("Highlight",self.rhymes_highlight.checkState())
 
 	def paintEvent(self, e):
 		layout = QVBoxLayout()
@@ -42,6 +42,8 @@ class SettingsPage(QWidget) :
 		layout.addWidget(self.font_picker)
 
 		self.rhymes_highlight = QCheckBox("Destacar rimas",self)
+		self.rhymes_highlight.setCheckState(self.settings.value("Highlight"))
+		self.rhymes_highlight.stateChanged.connect()
 		layout.addWidget(self.rhymes_highlight)
 
 		self.rhymes_label = QLabel("Procurar rimas pelo menos")
@@ -49,12 +51,9 @@ class SettingsPage(QWidget) :
 
 		self.rhymes_box = QComboBox()
 		self.rhymes_box.addItems(["3","4","5","6"])
-		self.rhymes_box.currentIndexChanged.connect(self.rhymes_box_value)
+		sel.rhymes_box.setCurrentIndex(self.settings.value("Rhymes")-3)
+		self.rhymes_box.currentIndexChanged.connect(self.rhymes_highlight_changed)
 		layout.addWidget(self.rhymes_box)
-		
-		self.save_btn = QPushButton("Salvar")
-		self.save_btn.clicked.connect(self.save)
-		layout.addWidget(self.save_btn)
 		
 
 		self.setLayout(layout)
