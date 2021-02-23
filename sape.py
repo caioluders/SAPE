@@ -27,6 +27,10 @@ class SettingsPage(QWidget) :
 
 		if ok :
 			self.settings.setValue("Font",font)
+			temp_text = sape.text_edit.toPlainText()
+			sape.text_edit.clear()
+			sape.text_edit.setCurrentFont(font)
+			sape.text_edit.insertPlainText(temp_text)
 
 	def rhymes_highlight_changed(self):
 		self.settings.setValue("Highlight",self.rhymes_highlight.checkState())
@@ -248,6 +252,7 @@ if __name__ == "__main__":
 	stream = QTextStream(file)
 	app.setStyleSheet(stream.readAll())
 
+	global sape
 	sape = SAPE()
 	sape.show()
 	sys.exit(app.exec_())
