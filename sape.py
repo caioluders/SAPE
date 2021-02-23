@@ -29,10 +29,10 @@ class SettingsPage(QWidget) :
 			self.settings.setValue("Font",font)
 
 	def rhymes_highlight_changed(self):
-		self.settings.setValue("Rhymes",i+3)
+		self.settings.setValue("Highlight",self.rhymes_highlight.checkState())
 
 	def rhymes_box_value(self, i) :
-		self.settings.setValue("Highlight",self.rhymes_highlight.checkState())
+		self.settings.setValue("Rhymes",i+3)
 
 	def paintEvent(self, e):
 		layout = QVBoxLayout()
@@ -42,8 +42,7 @@ class SettingsPage(QWidget) :
 		layout.addWidget(self.font_picker)
 
 		self.rhymes_highlight = QCheckBox("Destacar rimas",self)
-		self.rhymes_highlight.setCheckState(self.settings.value("Highlight"))
-		self.rhymes_highlight.stateChanged.connect()
+		self.rhymes_highlight.stateChanged.connect(self.rhymes_highlight_changed)
 		layout.addWidget(self.rhymes_highlight)
 
 		self.rhymes_label = QLabel("Procurar rimas pelo menos")
@@ -51,8 +50,8 @@ class SettingsPage(QWidget) :
 
 		self.rhymes_box = QComboBox()
 		self.rhymes_box.addItems(["3","4","5","6"])
-		sel.rhymes_box.setCurrentIndex(self.settings.value("Rhymes")-3)
-		self.rhymes_box.currentIndexChanged.connect(self.rhymes_highlight_changed)
+		self.rhymes_box.setCurrentIndex(self.settings.value("Rhymes")-3)
+		self.rhymes_box.currentIndexChanged.connect(self.rhymes_box_value)
 		layout.addWidget(self.rhymes_box)
 		
 
