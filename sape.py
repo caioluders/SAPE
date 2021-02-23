@@ -30,9 +30,9 @@ class SettingsPage(QWidget) :
 
 	def save(self) :
 		self.settings.setValue("Highlight",self.rhymes_highlight.isChecked())
-		self.settings.setValue("Rhymes",self.rhymes_box.value())
 
-		print(self.settings.value("Rhymes"))
+	def rhymes_box_value(self, i) :
+		self.settings.setValue("Rhymes",i+3)
 
 	def paintEvent(self, e):
 		layout = QVBoxLayout()
@@ -47,10 +47,11 @@ class SettingsPage(QWidget) :
 		self.rhymes_label = QLabel("Procurar rimas pelo menos")
 		layout.addWidget(self.rhymes_label)
 
-		self.rhymes_box = QSpinBox()
+		self.rhymes_box = QComboBox()
+		self.rhymes_box.addItems(["3","4","5","6"])
+		self.rhymes_box.currentIndexChanged.connect(self.rhymes_box_value)
 		layout.addWidget(self.rhymes_box)
 		
-
 		self.save_btn = QPushButton("Salvar")
 		self.save_btn.clicked.connect(self.save)
 		layout.addWidget(self.save_btn)
@@ -210,6 +211,7 @@ class SAPE(QMainWindow):
 		if len(selected_word) < 3 :
 			return 
 		suffix_size = self.settings.value("Rhymes")
+		print(suffix_size)
 		rhymes = [ x["word"] for x in requests.get(API_URL+selected_word[-suffix_size:]).json() ]
 		self.rhymes_box.clear()
 		self.rhymes_box.addItems(rhymes)
