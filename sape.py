@@ -33,8 +33,8 @@ class SettingsPage(QWidget) :
 			sape.text_edit.insertPlainText(temp_text)
 
 	def rhymes_highlight_changed(self, x):
-		self.settings.setValue("Highlight",Qt.CheckState(Qt.Checked) if x == 2 else Qt.CheckState(Qt.Unchecked) )
-		print(self.settings.value("Highlight"))
+		#self.settings.setValue("Highlight",Qt.CheckState(Qt.Checked) if x == 2 else Qt.CheckState(Qt.Unchecked) )
+		#print(self.settings.value("Highlight"))
 		temp_text = sape.text_edit.toPlainText()
 		sape.text_edit.clear()
 		sape.text_edit.insertPlainText(temp_text)
@@ -173,25 +173,26 @@ class SAPE(QMainWindow):
 		syllables_list = []
 
 		for pl in poem_lines :
-		    pl_n = 0
-		    for w in pl.split(" ") : 
-			    
-			    w_phonetic = G2PTranscriber(w.encode("utf-8").lower(), algorithm="ceci")
-			    w_syllables = w_phonetic.get_syllables()
-			    w_syllables_phonetic = w_phonetic.transcriber()
-			    print(rhymes_highlight)
-			    pl_n += len(w_syllables)
-			    if self.settings.value("Highlight") == Qt.Checked :
-				    for si in range(0,len(w_syllables)) : 
-					    if len(w_syllables[si]) >= 2 :
-						    if (w_syllables[si] not in rhymes_highlight.keys()) :
-							    keyword = QTextCharFormat()
-							    brush = QBrush( random.choice([ Qt.red , Qt.darkRed , Qt.green , Qt.darkGreen , Qt.blue , Qt.darkBlue , Qt.cyan , Qt.darkCyan , Qt.magenta , Qt.darkMagenta , Qt.yellow , Qt.darkYellow , Qt.gray , Qt.darkGray , Qt.lightGray]), Qt.SolidPattern )
-							    keyword.setBackground( brush )
+			pl_n = 0
+			for w in pl.split(" ") : 
 
-							    rule = HighlightingRule( w_syllables[si], keyword )
-							    rhymes_highlight[ w_syllables[si] ] = rule
-		    syllables_list.append(pl_n)
+				w_phonetic = G2PTranscriber(w.encode("utf-8").lower(), algorithm="ceci")
+				w_syllables = w_phonetic.get_syllables()
+				w_syllables_phonetic = w_phonetic.transcriber()
+				print(rhymes_highlight)
+				pl_n += len(w_syllables)
+				# if self.settings.value("Highlight") == Qt.Checked :
+				for si in range(0,len(w_syllables)) : 
+					continue
+					if len(w_syllables[si]) >= 2 :
+						if (w_syllables[si] not in rhymes_highlight.keys()) :
+							keyword = QTextCharFormat()
+							brush = QBrush( random.choice([ Qt.red , Qt.darkRed , Qt.green , Qt.darkGreen , Qt.blue , Qt.darkBlue , Qt.cyan , Qt.darkCyan , Qt.magenta , Qt.darkMagenta , Qt.yellow , Qt.darkYellow , Qt.gray , Qt.darkGray , Qt.lightGray]), Qt.SolidPattern )
+							keyword.setBackground( brush )
+
+							rule = HighlightingRule( w_syllables[si], keyword )
+							rhymes_highlight[ w_syllables[si] ] = rule
+			syllables_list.append(pl_n)
 
 		for p in syllables_list :
 			syllabes_text += str(p)+"\n"	
@@ -246,6 +247,8 @@ class SAPE(QMainWindow):
 			self.text_edit.setText(data)
 
 	def save_file(self) :
+		if self.fname == None:
+			self.fname = QFileDialog.getSaveFileName(self,'Name','/')
 		fw = open(self.fname[0],'w')
 		with fw :
 			fw.write(self.text_edit.toPlainText())
