@@ -51,7 +51,7 @@ class SettingsPage(QWidget) :
 
 		self.rhymes_highlight = QCheckBox("Destacar rimas",self)
 		self.rhymes_highlight.stateChanged.connect(self.rhymes_highlight_changed)
-		self.rhymes_highlight.setCheckState(self.settings.value("Highlight"))
+		#self.rhymes_highlight.setCheckState(self.settings.value("Highlight"))
 		layout.addWidget(self.rhymes_highlight)
 
 		self.rhymes_label = QLabel("Procurar rimas pelo menos")
@@ -59,7 +59,7 @@ class SettingsPage(QWidget) :
 
 		self.rhymes_box = QComboBox()
 		self.rhymes_box.addItems(["3","4","5","6"])
-		self.rhymes_box.setCurrentIndex(self.settings.value("Rhymes")-3)
+		self.rhymes_box.setCurrentIndex(int(self.settings.value("Rhymes"))-3)
 		self.rhymes_box.currentIndexChanged.connect(self.rhymes_box_value)
 		layout.addWidget(self.rhymes_box)
 		
@@ -174,16 +174,30 @@ class SAPE(QMainWindow):
 
 		for pl in poem_lines :
 			pl_n = 0
-			for w in pl.split(" ") : 
-
+			pl_splited = pl.split(" ")
+			for w in pl_splited : 
 				w_phonetic = G2PTranscriber(w.encode("utf-8").lower(), algorithm="ceci")
 				w_syllables = w_phonetic.get_syllables()
+				#print(w_syllables)
 				w_syllables_phonetic = w_phonetic.transcriber()
-				print(rhymes_highlight)
+				#print(w_syllables_phonetic)
+				#print(rhymes_highlight)
 				pl_n += len(w_syllables)
+
+				if pl_splited.index(w) < len(pl_splited)-1 :
+					if (w_syllables[-1][-1] in "aeiou") and ( pl_splited[pl_splited.index(w)+1][0] in "aeiou") :
+						pl_n -= 1
+
+				vogais_acentuadas = u'áéíóú'
+
+				if pl_splited.index(w) == len(pl_splited)-1 and \
+				   len(w_syllables) > 1 and \
+				   any([ x not in vogais_acentuadas for x in w_syllables[-1] ]) :
+					pl_n -= 1
+
+
 				# if self.settings.value("Highlight") == Qt.Checked :
 				for si in range(0,len(w_syllables)) : 
-					continue
 					if len(w_syllables[si]) >= 2 :
 						if (w_syllables[si] not in rhymes_highlight.keys()) :
 							keyword = QTextCharFormat()
@@ -220,7 +234,7 @@ class SAPE(QMainWindow):
 		selected_word = self.text_edit.textCursor().selectedText()
 		if len(selected_word) < 3 :
 			return 
-		suffix_size = self.settings.value("Rhymes")
+		suffix_size = int(self.settings.value("Rhymes"))
 		rhymes = [ x["word"] for x in requests.get(API_URL+selected_word[-suffix_size:]).json() ]
 		self.rhymes_box.clear()
 		self.rhymes_box.addItems(rhymes)
@@ -249,9 +263,10 @@ class SAPE(QMainWindow):
 	def save_file(self) :
 		if self.fname == None:
 			self.fname = QFileDialog.getSaveFileName(self,'Name','/')
-		fw = open(self.fname[0],'w')
-		with fw :
-			fw.write(self.text_edit.toPlainText())
+		if self.fname != None : 
+			fw = open(self.fname[0],'w')
+			with fw :
+				fw.write(self.text_edit.toPlainText())
 
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
