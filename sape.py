@@ -1,4 +1,4 @@
-import sys , requests, random
+import sys , requests, random, string
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
@@ -32,9 +32,8 @@ class SettingsPage(QWidget) :
 			sape.text_edit.setCurrentFont(font)
 			sape.text_edit.insertPlainText(temp_text)
 
-	def rhymes_highlight_changed(self, x):
-		#self.settings.setValue("Highlight",Qt.CheckState(Qt.Checked) if x == 2 else Qt.CheckState(Qt.Unchecked) )
-		#print(self.settings.value("Highlight"))
+	def rhymes_highlight_changed(self, i):
+		self.settings.setValue("Highlight",(True if i == 0 else False))
 		temp_text = sape.text_edit.toPlainText()
 		sape.text_edit.clear()
 		sape.text_edit.insertPlainText(temp_text)
@@ -49,8 +48,13 @@ class SettingsPage(QWidget) :
 		self.font_picker.clicked.connect(self.getfont)		
 		layout.addWidget(self.font_picker)
 
-		self.rhymes_highlight = QCheckBox("Destacar rimas",self)
-		self.rhymes_highlight.stateChanged.connect(self.rhymes_highlight_changed)
+		self.highlight_label = QLabel("Destacar rimas?",self)
+		layout.addWidget(self.highlight_label)
+
+		self.rhymes_highlight = QComboBox()
+		self.rhymes_highlight.addItems(["Sim","Nao"])
+		self.rhymes_highlight.setCurrentIndex(0 if self.settings.value("Highlight") else 1)
+		self.rhymes_highlight.currentIndexChanged.connect(self.rhymes_highlight_changed)
 		#self.rhymes_highlight.setCheckState(self.settings.value("Highlight"))
 		layout.addWidget(self.rhymes_highlight)
 
@@ -87,13 +91,15 @@ class MyHighlighter( QSyntaxHighlighter ):
 			self.highlightingRules.append( rule )
 
 	def highlightBlock( self, text ):
-		for rule in rhymes_highlight.values() :
-			expression = rule.pattern 
-			index = findall(expression,text)
-			length = len(expression)
-			for m in index : 
-				self.setFormat( m, length, rule.format )
-		self.setCurrentBlockState( 0 )
+		self.settings = QSettings("SAPE","SAPE")
+		if self.settings.value("Highlight") :
+			for rule in rhymes_highlight.values() :
+				expression = rule.pattern 
+				index = findall(expression,text)
+				length = len(expression)
+				for m in index : 
+					self.setFormat( m, length, rule.format )
+			self.setCurrentBlockState( 0 )
 
 class HighlightingRule():
 	def __init__( self, pattern, format ):
@@ -114,8 +120,8 @@ class SAPE(QMainWindow):
 
 		self.settings = QSettings("SAPE","SAPE")
 
-		#if self.settings.value("Highlight") == None :
-		self.settings.setValue("Highlight",Qt.CheckState(Qt.Checked))
+		if self.settings.value("Highlight") == None :
+			self.settings.setValue("Highlight",False)
 		if self.settings.value("Rhymes") == None :
 			self.settings.setValue("Rhymes",3)
 		if self.settings.value("Font") == None :
@@ -166,6 +172,8 @@ class SAPE(QMainWindow):
 
 	def add_syllabes(self) :
 		poem = self.text_edit.toPlainText()
+		if poem[-1] not in string.punctuation+string.whitespace :
+			return
 		poem_lines = poem.split("\n")
 		syllabes_text = ""
 
@@ -184,28 +192,31 @@ class SAPE(QMainWindow):
 				#print(rhymes_highlight)
 				pl_n += len(w_syllables)
 
+				# funde vogais  
 				if pl_splited.index(w) < len(pl_splited)-1 :
-					if (w_syllables[-1][-1] in "aeiou") and ( pl_splited[pl_splited.index(w)+1][0] in "aeiou") :
+					if (w_syllables[-1][-1] in "aeiou") and \
+					( pl_splited[pl_splited.index(w)+1][0] in "aeiou") :
 						pl_n -= 1
 
 				vogais_acentuadas = u'áéíóú'
+
+				# ignora ultima sílaba , se nao for átona
 
 				if pl_splited.index(w) == len(pl_splited)-1 and \
 				   len(w_syllables) > 1 and \
 				   any([ x not in vogais_acentuadas for x in w_syllables[-1] ]) :
 					pl_n -= 1
 
-
-				# if self.settings.value("Highlight") == Qt.Checked :
 				for si in range(0,len(w_syllables)) : 
 					if len(w_syllables[si]) >= 2 :
-						if (w_syllables[si] not in rhymes_highlight.keys()) :
+						if (w_syllables[si] not in rhymes_highlight.keys() ) :
 							keyword = QTextCharFormat()
 							brush = QBrush( random.choice([ Qt.red , Qt.darkRed , Qt.green , Qt.darkGreen , Qt.blue , Qt.darkBlue , Qt.cyan , Qt.darkCyan , Qt.magenta , Qt.darkMagenta , Qt.yellow , Qt.darkYellow , Qt.gray , Qt.darkGray , Qt.lightGray]), Qt.SolidPattern )
 							keyword.setBackground( brush )
 
 							rule = HighlightingRule( w_syllables[si], keyword )
 							rhymes_highlight[ w_syllables[si] ] = rule
+							#print(rhymes_highlight)
 			syllables_list.append(pl_n)
 
 		for p in syllables_list :
