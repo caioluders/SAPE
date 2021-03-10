@@ -53,9 +53,8 @@ class SettingsPage(QWidget) :
 
 		self.rhymes_highlight = QComboBox()
 		self.rhymes_highlight.addItems(["Sim","Nao"])
-		self.rhymes_highlight.setCurrentIndex(0 if self.settings.value("Highlight") else 1)
+		self.rhymes_highlight.setCurrentIndex(0 if (self.settings.value("Highlight") == True) else 1)
 		self.rhymes_highlight.currentIndexChanged.connect(self.rhymes_highlight_changed)
-		#self.rhymes_highlight.setCheckState(self.settings.value("Highlight"))
 		layout.addWidget(self.rhymes_highlight)
 
 		self.rhymes_label = QLabel("Procurar rimas pelo menos")
@@ -92,7 +91,7 @@ class MyHighlighter( QSyntaxHighlighter ):
 
 	def highlightBlock( self, text ):
 		self.settings = QSettings("SAPE","SAPE")
-		if self.settings.value("Highlight") :
+		if self.settings.value("Highlight") == True :
 			for rule in rhymes_highlight.values() :
 				expression = rule.pattern 
 				index = findall(expression,text)
@@ -111,7 +110,7 @@ class SAPE(QMainWindow):
 		super(SAPE, self).__init__()
 		self.setWindowTitle("SAPE - Software Assisted Poetry Editor")
 		#self.setWindowFlags(Qt.FramelessWindowHint) # it bugs on MacOS
-		self.resize(475, 253)
+		#self.resize(475, 253)
 		
 		self.close_button = QPushButton("X")	
 		self.close_button.clicked.connect(lambda _: [self.close_button.hide(),self.rhymes_box.hide()])
@@ -119,9 +118,8 @@ class SAPE(QMainWindow):
 
 
 		self.settings = QSettings("SAPE","SAPE")
-
 		if self.settings.value("Highlight") == None :
-			self.settings.setValue("Highlight",False)
+			self.settings.setValue("Highlight",False) # Bugado , nao use
 		if self.settings.value("Rhymes") == None :
 			self.settings.setValue("Rhymes",3)
 		if self.settings.value("Font") == None :
@@ -172,8 +170,6 @@ class SAPE(QMainWindow):
 
 	def add_syllabes(self) :
 		poem = self.text_edit.toPlainText()
-		if poem[-1] not in string.punctuation+string.whitespace :
-			return
 		poem_lines = poem.split("\n")
 		syllabes_text = ""
 
@@ -207,6 +203,9 @@ class SAPE(QMainWindow):
 				   any([ x not in vogais_acentuadas for x in w_syllables[-1] ]) :
 					pl_n -= 1
 
+				# highlight
+				if poem[-1] not in string.punctuation+string.whitespace :
+					continue
 				for si in range(0,len(w_syllables)) : 
 					if len(w_syllables[si]) >= 2 :
 						if (w_syllables[si] not in rhymes_highlight.keys() ) :
@@ -217,6 +216,7 @@ class SAPE(QMainWindow):
 							rule = HighlightingRule( w_syllables[si], keyword )
 							rhymes_highlight[ w_syllables[si] ] = rule
 							#print(rhymes_highlight)
+			
 			syllables_list.append(pl_n)
 
 		for p in syllables_list :
@@ -272,9 +272,9 @@ class SAPE(QMainWindow):
 			self.text_edit.setText(data)
 
 	def save_file(self) :
-		if self.fname == None:
+		if self.fname == None and self.fname[0] == '' :
 			self.fname = QFileDialog.getSaveFileName(self,'Name','/')
-		if self.fname != None : 
+		if self.fname[0] != '' : 
 			fw = open(self.fname[0],'w')
 			with fw :
 				fw.write(self.text_edit.toPlainText())
