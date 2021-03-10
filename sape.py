@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys , requests, random, string
 from PySide2.QtCore import *
 from PySide2.QtGui import *
