@@ -9,6 +9,17 @@ SAPE is a poetry editor program, basicly a minimalistic text-editor with two mai
 * Rhyme search
 * Rhyme highlight
 
+## Installation
+
+### Linux
+
+```
+$ git clone https://github.com/caioluders/SAPE.git
+$ cd SAPE
+$ pip instal -r requiments.txt
+$ ./sape.py
+```
+
 ### Phonetic Syllable counter
 It counts the sum of the Phonetic Syllable of each line, helping the poet to adjust the metric of your poem. It's the number before each line.
 
