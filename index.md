@@ -1,37 +1,34 @@
-## Welcome to GitHub Pages
+# SAPE
+**Software Assisted Poetry Editor**
 
-You can use the [editor on GitHub](https://github.com/caioluders/SAPE/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+![Screenshot](https://i.imgur.com/pS3X3rk.png)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## WTF ?
+SAPE is a poetry editor program, basicly a minimalistic text-editor with two main functions : 
+* Phonetic Syllable counter
+* Rhyme search
+* Rhyme highlight
 
-### Markdown
+## Installation
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Linux
 
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```
+$ git clone https://github.com/caioluders/SAPE.git
+$ cd SAPE
+$ pip instal -r requiments.txt
+$ ./sape.py
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+### Phonetic Syllable counter
+It counts the sum of the Phonetic Syllable of each line, helping the poet to adjust the metric of your poem. It's the number before each line.
 
-### Jekyll Themes
+### Rhyme search
+It helps the poet to find words that rime with a desired word. Select the word and press go to "Edit->Rimes" ( Or cmd+R )
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/caioluders/SAPE/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+### Rhyme search
+Highlights every rhyme wihthin the text.
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+#### ETC
+Right now only works with Brazilian Portuguese , and it uses the word database of dicionario-aberto.net
+For the syllable counter we're using https://github.com/alessandrobokan/PETRUS
