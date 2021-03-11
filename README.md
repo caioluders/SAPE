@@ -40,5 +40,5 @@ $ ./sape.py
 ```
 
 #### ETC
-Só funciona com Português, e usa a API do https://dicionario-aberto.net
-Para a contagem de sílabas, o programa usa a biblioteca PETRUS https://github.com/alessandrobokan/PETRUS
+Só funciona com Português, e usa a API do [dicionario-aberto.net](https://dicionario-aberto.net).
+Para a contagem de sílabas, o programa usa a biblioteca PETRUS [github.com/alessandrobokan/PETRUS](https://github.com/alessandrobokan/PETRUS)
