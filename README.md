@@ -25,12 +25,11 @@ Realça em cor todas as rimas do texto. Ainda em fase de testes.
 
 ### Windows
 
-Instale o último executável `.exe` em https://github.com/caioluders/SAPE/releases/
+Instale o último executável `.exe` em [github.com/caioluders/SAPE/releases](https://github.com/caioluders/SAPE/releases/)
 
 ### Mac
 
-Instale o último executável `.app` em https://github.com/caioluders/SAPE/releases/
-
+Instale o último executável `.app` em [github.com/caioluders/SAPE/releases](https://github.com/caioluders/SAPE/releases/)
 ### Linux
 
 ```
