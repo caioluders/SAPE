@@ -1,7 +1,7 @@
 # SAPE
 **Software Assisted Poetry Editor**
 
-![Screenshot](https://i.imgur.com/pS3X3rk.png)
+![Screenshot](https://i.imgur.com/EWA3UWD.png)
 
 ## WTF ?
 SAPE é um editor de poemas, basicamente um editor de texto minimalista com três funcões adicionais : 
