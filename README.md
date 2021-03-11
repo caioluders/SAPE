@@ -1,25 +1,35 @@
 # SAPE
 **Software Assisted Poetry Editor**
 
-![Screenshot](https://i.imgur.com/pS3X3rk.png)
+![Screenshot](https://i.imgur.com/EWA3UWD.png)
 
 ## WTF ?
-SAPE is a poetry editor program, basicly a minimalistic text-editor with two main functions : 
-* Phonetic Syllable counter
-* Rhyme search
-* Rhyme highlight
+SAPE é um editor de poemas, basicamente um editor de texto minimalista com três funcões adicionais : 
+* Contador de sílabas poéticas
+* Pesquisador de rimas
+* Realçador de rimas (beta)
 
-### Phonetic Syllable counter
-It counts the sum of the Phonetic Syllable of each line, helping the poet to adjust the metric of your poem. It's the number before each line.
+### Contador de sílabas poéticas
+O programa conta a soma das sílabas poéticas de cada verso, ajudando o poeta à ajustar sua métrica. É o número antes de cada linha.
 
-### Rhyme search
-It helps the poet to find words that rime with a desired word. Select the word and press go to "Edit->Rimes" ( Or cmd+R )
+### Pesquisador de rimas
+Ajuda o poeta a encontrar palavras que rimam com uma palavra específica.
+1. Selecione a palavra
+2. Aperte o botão direito do mouse
+3. Selecione "Procurar Rima"
 
-### Rhyme search
-Highlights every rhyme wihthin the text.
+### Realçador de rimas (beta)
+Realça em cor todas as rimas do texto. Ainda em fase de testes.
 
-## Installation
+## Instalação
 
+### Windows
+
+Instale o último executável `.exe` em [github.com/caioluders/SAPE/releases](https://github.com/caioluders/SAPE/releases/)
+
+### Mac
+
+Instale o último executável `.app` em [github.com/caioluders/SAPE/releases](https://github.com/caioluders/SAPE/releases/)
 ### Linux
 
 ```
@@ -30,5 +40,5 @@ $ ./sape.py
 ```
 
 #### ETC
-Right now only works with Brazilian Portuguese , and it uses the word database of dicionario-aberto.net
-For the syllable counter we're using https://github.com/alessandrobokan/PETRUS
+Só funciona com Português, e usa a API do https://dicionario-aberto.net
+Para a contagem de sílabas, o programa usa a biblioteca PETRUS https://github.com/alessandrobokan/PETRUS
