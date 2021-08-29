@@ -232,15 +232,25 @@ class SAPE(QMainWindow):
 		openAction.triggered.connect(self.open_file)
 		saveAction = QAction("Salvar",self)
 		saveAction.triggered.connect(self.save_file)
+		leetAction = QAction("1337",self)
+		leetAction.triggered.connect(self.leetfy)
 		rhymeAction = QAction("Procurar rima", self)
 		rhymeAction.triggered.connect(self.find_rhyme)
 		settingsAction = QAction("Preferências", self)
 		settingsAction.triggered.connect(self.show_settings)
 		menu.addAction(openAction)
+		menu.addAction(leetAction)
 		menu.addAction(saveAction)
 		menu.addAction(rhymeAction)
 		menu.addAction(settingsAction)
 		menu.exec_(QCursor.pos())
+
+	def leetfy(self) :
+		leet_dict = {"a":"4","e":"3","i":"1","o":"0","l":"1","t":"7","s":"5"}
+		poem = self.text_edit.toPlainText()
+		poem_leet = ''.join([ leet_dict[c.lower()] if c.lower() in leet_dict.keys() else c for c in list(poem) ])
+		self.text_edit.setPlainText(poem_leet)
+		
 
 	def find_rhyme( self ) :
 		API_URL = "https://api.dicionario-aberto.net/suffix/"
